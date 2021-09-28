@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+    <div class="tf">
+        <h1>Registration Form</h1>
+    </div>
+    <div class="box">
+        <form action="" method="post">
+            <div class="ele">
+                <label class="lbl" for="fname"> First Name</label>
+                <br>
+                <input class="inp" type="text" name="fname" id="fname">
+            </div>
+            <div class="ele">
+                <label class="lbl" for="lname"> Last Name</label>
+                <br>
+                <input class="inp" type="text" name="lname" id="lname">
+            </div>
+            <div class="ele">
+                <label class="lbl" for="email"> Email</label>
+                <br>
+                <input class="inp" type="email" name="email" id="email">
+            </div>
+
+            <div class="ele">
+                <label class="lbl" for="password">password</label>
+                <br>
+                <input class="inp" type="password" name="password" id="password">
+            </div>
+            <div class="ele">
+                <label class="lbl" for="gender">Gender</label>
+                <br>
+                <input class="inp" type="radio" name="gender" id="gender" value="Male"> Male
+                <input class="inp" type="radio" name="gender" id="gender" value="Female">Female
+            </div>
+            <div class="ele">
+                <label class="lbl" for="dob">Date of Birth</label>
+                <br>
+                <input class="inp" type="date" name="dob" id="dob">
+            </div>
+            <div class="ele">
+                <label class="lbl" for="password">Languages</label>
+                <br>
+                <select name="lang" id="lang" multiple style="width: 200px; font-size:15px;">
+                    <option value="eng">English</option>
+                    <option value="hin">Hindhi</option>
+                    <option value="tel">Telugu</option>
+                    <option value="tam">Tamil</option>
+                </select>
+            </div>
+
+            <br>
+            <button class="btn" type="submit">Register</button>
+            <br>
+            <br>
+            <button class="btn" type="reset">Reset</button>
+        </form>
+    </div>
+</body>
+
+</html>
