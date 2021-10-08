@@ -1,84 +1,233 @@
-{% extends "base.html" %}
+{% load static %}
 
-{% block content %}
 
-<form class="bg-white shadow-xl mb-4 flex flex-wrap justify-center" action="." method="POST" >
-  {% csrf_token %}
-  <div class="w-cover md:w-1/3 bg-blue-600 p-6 text-white">
-    <p class="mb-8 text-3xl flex items-center">
-      <svg
-        width="32"
-        height="32"
-        viewBox="0 0 512 512"
-        class="inline-block fill-current h-8 w-8 mr-2"
-      >
-        <path
-          d="m64 496l0-256 48 0 0-80c0-71 57-128 128-128l16 0c71 0 128 57 128 128l0 80 48 0 0 256z m172-131l-12 83 48 0-12-83c12-5 20-17 20-30 0-18-14-32-32-32-18 0-32 14-32 32 0 13 8 25 20 30z m100-197c0-49-39-88-88-88-49 0-88 39-88 88l0 72 176 0z"
-        />
-      </svg>
-      Login Now
-    </p>
-    <div class="mb-4">
-      <input
-        class="appearance-none border w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        type="text"
-        placeholder="Username"
-        name = 'username'
-      />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>claim</title>
+    
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="font-mono bg-gray-400">
+    
+  
+
+<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+<div class="w-full text-gray-700 bg-white dark-mode:text-gray-200 dark-mode:bg-gray-800">
+  <div x-data="{ open: false }" class="flex flex-col max-w-screen-xl px-4 mx-auto md:items-center md:justify-between md:flex-row md:px-6 lg:px-8">
+    <div class="p-4 flex flex-row items-center justify-between">
+      <a href="{% url 'landingpage' %}" class="text-lg font-semibold tracking-widest text-gray-900 uppercase rounded-lg dark-mode:text-white focus:outline-none focus:shadow-outline">Claimers</a>
+      <button class="md:hidden rounded-lg focus:outline-none focus:shadow-outline" @click="open = !open">
+        <svg fill="currentColor" viewBox="0 0 20 20" class="w-6 h-6">
+          <path x-show="!open" fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM9 15a1 1 0 011-1h6a1 1 0 110 2h-6a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+          <path x-show="open" fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+        </svg>
+      </button>
     </div>
-    <div class="mb-6">
-      <input
-        class="appearance-none border w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-        type="password"
-        name = "password"
-        placeholder="Password"
-      />
-    </div>
-    <button
-      class="block w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline"
-      type="submit"
-    >Login</button>
+    <nav :class="{'flex': open, 'hidden': !open}" class="flex-col flex-grow pb-4 md:pb-0 hidden md:flex md:justify-end md:flex-row">
+      <a class="px-4 py-2 mt-2 text-sm font-semibold text-gray-900 bg-gray-200 rounded-lg dark-mode:bg-gray-700 dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 md:mt-0 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" href="{% url 'claims:list' %}">Claims</a>
+      <a class="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 md:mt-0 md:ml-4 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" href="#">Portfolio</a>
+      <a class="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 md:mt-0 md:ml-4 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" href="#">About</a>
+      <a class="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 md:mt-0 md:ml-4 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" href="#">Contact</a>
+      <div @click.away="open = false" class="relative" x-data="{ open: false }">
+       {% if user.is_authenticated %}
+        {% if user.is_agent %}
+              <button @click="open = !open" class="flex flex-row items-center w-full px-4 py-2 mt-2 text-sm font-semibold text-left bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:focus:bg-gray-600 dark-mode:hover:bg-gray-600 md:w-auto md:inline md:mt-0 md:ml-4 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline">
+             <div class="flex -space-x-1 overflow-hidden">
+              <img class="inline-block h-6 w-6 rounded-full ring-2 ring-white" src="{{user.pic.url}}" alt="">
+              {{user}}
+            </div>
+          {% else %}
+          <button @click="open = !open" class="flex flex-row items-center w-full px-4 py-2 mt-2 text-sm font-semibold text-left bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:focus:bg-gray-600 dark-mode:hover:bg-gray-600 md:w-auto md:inline md:mt-0 md:ml-4 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline">
+             <div class="flex -space-x-1 overflow-hidden">
+              <img class="inline-block h-6 w-6 rounded-full ring-2 ring-white" src="{{ user.socialaccount_set.all.0.get_avatar_url }}" alt="">
+              {{user}}
+            </div>
+            {% endif %}
 
-    <label class="block text-sm mb-4">
-      <input type="checkbox" /> Remember me
-    </label>
-
-    <a
-      class="block w-full text-sm text-right text-white hover:text-gray-300"
-      href="#"
-    >Forgot Password?</a>
+        {% else %}
+        <button @click="open = !open" class="flex flex-row items-center w-full px-4 py-2 mt-2 text-sm font-semibold text-left bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:focus:bg-gray-600 dark-mode:hover:bg-gray-600 md:w-auto md:inline md:mt-0 md:ml-4 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline">
+            <div class="flex -space-x-1 overflow-hidden">
+             <img class="inline-block h-6 w-6 rounded-full ring-2 ring-white" src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+           </div>
+        {% endif %}
+        
+        </button>
+        <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-0 w-full mt-2 origin-top-right rounded-md shadow-lg md:w-48">
+          <div class="px-2 py-2 bg-white rounded-md shadow dark-mode:bg-gray-800">
+            <a class="block px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 md:mt-0 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" href="{% url 'claims:agent' %}"> xp</a>
+            {% if not user.is_authenticated %}
+            <a class="block px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 md:mt-0 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" href="{% url 'claims:login' %}">Login</a>
+            {% endif %}
+            {% if user.is_authenticated %}
+            <a class="block px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 md:mt-0 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" href="{% url 'claims:logout' %}">Logout</a>
+            {% endif %}
+        </div>
+        </div>
+      </div>    
+    </nav>
   </div>
-  <div class="w-full md:w-2/3 p-6 flex flex-col justify-between">
-    <p
-      class="text-gray-700 mb-8"
-    >Login to access your files, communicate with colleagues and view project content.</p>
-    <a
-      class="block w-full mb-8 text-sm text-center text-blue-600 hover:text-blue-700"
-      href="{% url 'claims:agent' %}"
-    > Agent SignUp</a>
-    <a
-      class="block w-full mb-8 text-sm text-center text-blue-600 hover:text-blue-700"
-      href="{% url 'claims:customer' %}"
-    >Customer SignUp</a>
+</div>
+    <!-- Registration Form -->
+    <div class="container mx-auto">
+      <div class="flex justify-center px-6 my-12">
+        <!-- Row -->
+        <div class="w-full xl:w-3/4 lg:w-11/12 flex">
+          <!-- Col -->
+          <div
+            class="w-full h-auto bg-gray-400 hidden lg:block lg:w-5/12 bg-cover rounded-l-lg"
+            style="background-image: url('https://source.unsplash.com/Mv9hjnEUHR4/600x800')"
+          ></div>
+          <!-- Col -->
+          <div class="w-full lg:w-7/12 bg-white p-5 rounded-lg lg:rounded-l-none">
+            <h3 class="pt-4 text-2xl text-center">Create an Account!</h3>
+            <form action = "." method = "POST" class="px-8 pt-6 pb-8 mb-4 bg-white rounded" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="mb-4 md:flex md:justify-between">
+                <div class="mb-4 md:mr-2 md:mb-0">
+                  <div class="py-3 center mx-auto">
+                          <div class="bg-white px-4 py-5 rounded-lg shadow-lg text-center w-48">
+                            <div class="mb-4">
+                              <img class="w-auto mx-auto rounded-full object-cover object-center" src="https://i1.pngguru.com/preview/137/834/449/cartoon-cartoon-character-avatar-drawing-film-ecommerce-facial-expression-png-clipart.jpg" alt="Avatar Upload" />
+                            </div>
+                            <label class="cursor-pointer mt-6">
+                              <span class="mt-2 text-base leading-normal px-4 py-2 bg-blue-500 text-white text-sm rounded-full" >Select Avatar</span>
+                              <input type='file' name = "pic" class="hidden" :multiple="multiple" :accept="accept" />
+                            </label>
+                          </div>
+                      </div>
+                </div>
+                
+              </div>
 
-    <p class="mb-4 text-center">OR</p>
-    <hr class="block w-full mb-4 border-0 border-t border-gray-300" />
-
-    <div class="flex flex-wrap justify-center">
-      <div class="w-full sm:w-1/2 sm:pr-2 mb-3 sm:mb-0">
-        <button
-          class="w-full bg-blue-800 hover:bg-blue-900 text-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline"
-          type="button"
-        ><a href="{% url 'social:begin' 'facebook' %}">Login with Facebook</a></button>
-      </div>
-      <div class="w-full sm:w-1/2 sm:pl-2">
-        <button
-          class="w-full bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline"
-          type="button"
-        >Login with Google</button>
+              <div class="mb-4 md:flex md:justify-between">
+                <div class="mb-4 md:mr-2 md:mb-0">
+                  <label class="block mb-2 text-sm font-bold text-gray-700" for="firstName">
+                    First Name
+                  </label>
+                  <input
+                    class="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                    id="firstName"
+                    type="text"
+                    placeholder="First Name"
+                    name = "fname"
+                  />
+                </div>
+                <div class="md:ml-2">
+                  <label class="block mb-2 text-sm font-bold text-gray-700" for="lastName">
+                    Last Name
+                  </label>
+                  <input
+                    class="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                    id="lastName"
+                    type="text"
+                    placeholder="Last Name"
+                    name = "lname"
+                  />
+                </div>
+              </div>
+              
+              <div class="mb-4 md:flex md:justify-between">
+                <div class="mb-4 md:mr-2 md:mb-0">
+                  <label class="block mb-2 text-sm font-bold text-gray-700" for="firstName">
+                    Username
+                  </label>
+                  <input
+                    class="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                    id="firstName"
+                    type="text"
+                    placeholder="First Name"
+                    name = "username"
+                  />
+                </div>
+                <div class="md:ml-2">
+                  <label class="block mb-2 text-sm font-bold text-gray-700" for="lastName">
+                    Phone Number
+                  </label>
+                  <input
+                    class="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                    id="lastName"
+                    type="text"
+                    placeholder="Last Name"
+                    name = "phone"
+                  />
+                </div>
+              </div>
+              <div class="mb-4">
+                <label class="block mb-2 text-sm font-bold text-gray-700" for="email">
+                  Email
+                </label>
+                <input
+                  class="w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                  id="email"
+                  type="email"
+                  placeholder="Email"
+                  name = "email"
+                />
+              </div>
+              <div class="mb-4 md:flex md:justify-between">
+                <div class="mb-4 md:mr-2 md:mb-0">
+                  <label class="block mb-2 text-sm font-bold text-gray-700" for="password">
+                    Password
+                  </label>
+                  <input
+                    class="w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border border-red-500 rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                    id="password"
+                    type="password"
+                    placeholder="******************"
+                    name = "pass1"
+                  />
+                  <p class="text-xs italic text-red-500">Please choose a password.</p>
+                </div>
+                <div class="md:ml-2">
+                  <label class="block mb-2 text-sm font-bold text-gray-700" for="c_password">
+                    Confirm Password
+                  </label>
+                  <input
+                    class="w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                    id="c_password"
+                    type="password"
+                    placeholder="******************"
+                    name = "pass2"
+                  />
+                </div>
+              </div>
+              <div class="mb-6 text-center">
+                <button
+                  class="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700 focus:outline-none focus:shadow-outline"
+                  type="submit"
+                >
+                  Register Account
+                </button>
+              </div>
+              <hr class="mb-6 border-t" />
+              <div class="text-center">
+                <a
+                  class="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800"
+                  href="#"
+                >
+                  Forgot Password?
+                </a>
+              </div>
+              <div class="text-center">
+                <a
+                  class="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800"
+                  href="{% url 'claims:login' %}"
+                >
+                  Already have an account? Login!
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</form>
+   
 
-{% endblock content %}
+
+   
+</body>
+</html>

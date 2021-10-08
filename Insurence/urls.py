@@ -23,5 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',LandingPage,name = 'landingpage'),
     path('claims/',include('claims.urls',namespace='leads')),
-    path('oauth/', include('social_django.urls', namespace='social')), 
+    path('oauth/', include('social_django.urls', namespace='social')),
+    path('accounts/',include('allauth.urls')),
 ] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT) 
