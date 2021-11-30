@@ -40,8 +40,8 @@ class LeadDetails(models.Model):
 class VechileDetails(models.Model):
     lead = models.ForeignKey(LeadDetails,on_delete = models.CASCADE,default = None)
     license = models.CharField(max_length=15)
-    licencepic = models.ImageField(blank=True, null=True, upload_to='images/')
-    Rcpic = models.ImageField(blank=True, null=True, upload_to='images/')
+    licencepic = models.FileField(blank=True, null=True, upload_to='images/')
+    Rcpic = models.FileField(blank=True, null=True, upload_to='images/')
     Rigestration_Number = models.CharField(max_length = 15,unique=True)
     licenseuser = models.CharField(max_length = 30)
 
@@ -54,5 +54,5 @@ class ObjectDetails(models.Model):
     Pdate = models.DateTimeField(default = now)
 
 class FeedBack(models.Model):
-    discribtion = models.TextField()
-    email = models.EmailField(unique=True)
+    message = models.CharField(max_length = 100,default = None)
+    email = models.EmailField()

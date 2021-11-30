@@ -1,7 +1,11 @@
 from django.http.response import Http404
 from django.shortcuts import render, redirect
-from .models import LeadDetails, User, AgentUser,VechileDetails,ObjectDetails
+from .models import LeadDetails, User, AgentUser,VechileDetails,ObjectDetails,FeedBack
 from django.contrib.auth import login, logout, authenticate
+from django.views.generic.list import ListView
+from django.views.generic import TemplateView
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 def Leadlist(request):
@@ -11,9 +15,9 @@ def Leadlist(request):
     data = LeadDetails.objects.filter(user = idl)
     context = {
         'data': data,
-        "user": user
+        "user": idl
     }
-    return render(request, 'claims/list.html', context)
+    return render(request, 'list.html', context)
 
 
 def Agentleadslist(request):
@@ -24,7 +28,7 @@ def Agentleadslist(request):
     context = {
     'data' :data
     }
-    return render(request,'claims/agentleads.html',context)
+    return render(request,'Agentleads.html',context)
 
 
 
@@ -33,18 +37,21 @@ def LandingPage(request):
     context = {
     "user":user
     }
-    return render(request,'landingpage.html',context)
+    return render(request,'claims/Landingpage.html',context)
 
 
 
-def AgentList(request):
-    agent = AgentUser.objects.all()
-    context = {
-    'agents':agent
-    }
-    return render(request,'claims/agentlist.html',context)
+#def AgentList(request):
+#    agent = AgentUser.objects.all()
+#    context = {
+#    'agents':agent
+#    }
+ #   return render(request,'claims/agentlist.html',context)
 
-
+class AgentList(ListView):
+    template_name = 'agentlist.html'
+    queryset = AgentUser.objects.all()
+    context_object_name = 'agents'
 
 
 
@@ -94,7 +101,8 @@ def AgentSignUp(request):
         repass = request.POST['pass2']
         pic = request.FILES['pic']
         email = request.POST['email']
-        asi = User(first_name = first_name,last_name = last_name,username = username,password = password,is_agent = True,email = email,pic = pic)
+        asi = User(first_name = first_name,last_name = last_name,
+            socialauth = False,username = username,password = password,is_agent = True,email = email,pic = pic)
         
         phone = request.POST["phone"]
         if(password != repass):
@@ -103,10 +111,19 @@ def AgentSignUp(request):
         asi.set_password(password)
         asi.save()
         asi1.save()
+        return redirect('landingpage')
 
     return render(request,'signup.html')        
 
 
+def LeadDelete(request,pk):
+    if request.method == "POST":
+        print(pk)
+        lead = LeadDetails.objects.get(id = pk)
+        lead.delete()
+        return redirect('claims:list')
+    
+    return render(request,'claims/delete.html')
 
 def Logout(request):
     logout(request)
@@ -148,7 +165,7 @@ def LeadCreate(request):
             obj.save()
             return redirect('claims:object',obj.id)
 
-    return render(request,"claims/create.html",context)
+    return render(request,"create.html",context)
 
 def Vechile(request,pk):
     if request.method == 'POST':
@@ -178,11 +195,46 @@ def Objectd(request,pk):
 
 def Leadproperties(request,pk):
     data = LeadDetails.objects.filter(id = pk).first()
+    user = request.user
+    if user.is_agent:
 
-    context = {
-    'data':data
-    }
-    return render(request,"claims/details.html",context)
+        auser = User.objects.filter(username = user).first()
+        agent = AgentUser.objects.filter(user = auser).first()
+
+    if data.is_v:
+        vech = VechileDetails.objects.filter(lead = data).first()
+        context = {
+        'data':data,
+        'vech':vech,
+        'user':user,
+        'pk':pk
+        }
+    else:
+        obje = ObjectDetails.objects.filter(lead = data).first()
+        context = {
+        'data':data,
+        'obj':obje,
+        'user':user,
+        'pk':pk
+        }
+    if request.method == "POST":
+        message = 'Further details contact the agent. \n'+'Agent Name:'+ agent.user.username   + '\n Mail:' + agent.user.email  
+
+        
+        send_mail(
+            "Your claim has been selected by agent" + data.agent.user.username,
+            message,
+            'khajababa.md2002@gmail.com',
+            [data.email]
+
+            )
+        data.is_selected = True
+        agent.is_available = False
+        agent.save()
+        data.save()
+        return redirect('claims:agentleads')
+
+    return render(request,"Details.html",context)
 
 def Agentdetail(request,user):
 
@@ -193,3 +245,109 @@ def Agentdetail(request,user):
     }
     return render(request,'claims/adetails.html',context)
 
+
+def Accountdetails(request):
+    user = request.user
+    
+    auser = User.objects.filter(username = user).first()
+    if auser.is_agent:
+        agent = AgentUser.objects.filter(user = auser).first()
+        context = {
+        'agent':agent,
+        'user':user
+        }
+    else:
+        context={
+        'auser':auser,
+        }
+    if request.method == "POST":
+        value = request.POST['avai']
+        agent = AgentUser.objects.filter(user = auser).first()
+        if value == 'A':
+            agent.is_available = True
+            agent.save()
+        else:
+            agent.is_available = False
+            agent.save()
+
+        return redirect('claims:agentleads')
+    return render(request,'accountdetails.html',context)
+
+
+def ContactUs(request):
+    if request.method == "POST":
+        message = request.POST['message']
+        email = request.POST['email']
+        fd = FeedBack(message = message,email = email)
+        fd.save()
+        return redirect('landingpage')
+
+
+    return render(request,'Contact.html')
+
+
+def UpdateLead(request,pk):
+   
+    if request.method == "POST":
+        first_name = request.POST['fname']
+        last_name = request.POST['lname']
+        age = request.POST['age']
+        email = request.POST['email']
+        phone_number = request.POST['phone']
+        address = request.POST['address']
+        occupation = request.POST['occ']
+        auser = request.POST['agent']
+        user = User.objects.filter(username = auser).first()
+        luser = User.objects.filter(username = loginuser.username).first()
+        agent = AgentUser.objects.filter(user = user).first()
+        image = request.FILES['upload']
+        describtion = request.POST['desc']
+        obj = LeadDetails(user=luser,first_name = first_name,last_name = last_name,age = age,email = email,
+            address = address,phone = phone_number,occupation = occupation,agent = agent,image = image,describtion = describtion)
+        obj.update()
+        
+        
+        if obj.is_v:
+            lead = obj
+            license = request.POST['license']
+            licencepic = request.FILES['lpic']
+            Rigestration_Number = request.POST['rc']
+            Rcpic = request.FILES['rcpic']
+            licenseuser = request.POST['luser']
+            phone = request.POST['phone']
+            vo = VechileDetails(lead = lead,license = license,licencepic = licencepic,Rigestration_Number = Rigestration_Number
+                ,Rcpic = Rcpic,licenseuser = licenseuser,phone = phone)
+            vo.update()
+            return redirect('claims:list')
+        else:
+            lead = LeadDetails.objects.filter(id = pk).first()
+            item_name = request.POST['item']
+            UID = request.POST['uid']
+            pdate = request.POST['date']
+            ob = ObjectDetails(lead = lead,item_name = item_name,UID = UID,Pdate = pdate)
+            ob.update()
+        
+            return redirect('claims:list') 
+
+    data = LeadDetails.objects.filter(id = pk).first()
+    agent = AgentUser.objects.all()       
+    if data.is_v:
+        vdta = VechileDetails.objects.filter(lead = data).first()
+        context = {
+        'data':data,
+        'vdta':vdta,
+        'agent':agent
+        }
+    else:
+        edta = ObjectDetails.objects.filter(lead = data).first()
+        context = {
+        'data':data,
+        'edta':edta,
+        'agent':agent
+        }
+
+
+    return render(request,'claims/update.html',context)
+
+def AboutUs(request):
+    return render(request,'About.html')

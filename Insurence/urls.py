@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from claims.views import LandingPage
+from claims.views import LandingPage,Accountdetails,ContactUs,AboutUs
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -23,6 +23,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',LandingPage,name = 'landingpage'),
     path('claims/',include('claims.urls',namespace='leads')),
+    path('about/',AboutUs,name = 'about'),
     path('oauth/', include('social_django.urls', namespace='social')),
     path('accounts/',include('allauth.urls')),
+    path('profile/',Accountdetails,name = 'profile'),
+    path('contact/',ContactUs,name = "contact"),
 ] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT) 
